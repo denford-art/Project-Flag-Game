@@ -6,7 +6,7 @@ public class Jim: Entity
 {
     private void Start()
     {
-        lives = 2;
+        lives = 1;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -15,7 +15,6 @@ public class Jim: Entity
         {
             Hero.Instance.GetDamage();
             lives--;
-            Debug.Log("У червяка " + lives);
         }
 
       

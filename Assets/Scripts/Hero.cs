@@ -33,6 +33,8 @@ public class Hero : Entity
     private Animator anim;
     private SpriteRenderer sprite;
 
+    private int direction;
+
     public static Hero Instance { get; set; }
 
     private States State
@@ -61,7 +63,7 @@ public class Hero : Entity
     {
         if (isGrounded && !isAttacking) State = States.idle;
 
-        if (!isAttacking && Input.GetButton("Horizontal"))
+        if (!isAttacking && direction != 0)
             Run();
         if (!isAttacking && isGrounded && Input.GetButtonDown("Jump"))
             Jump();
@@ -85,28 +87,36 @@ public class Hero : Entity
         }
     }
 
+    public void CheckPress(int direct)
+    {
+        direction = direct;
+    }
+
     private void Run()
     {
         if (isGrounded) State = States.run;
 
-        Vector3 dir = transform.right * Input.GetAxis("Horizontal");
+        Vector3 dir = transform.right * direction;
 
         transform.position = Vector3.MoveTowards(transform.position, transform.position + dir, speed * Time.deltaTime);
 
         sprite.flipX = dir.x < 0.0f;
     }
 
-    private void Jump()
+    public void Jump()
     {
         if (!isGrounded) State = States.jump;
 
-        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
-        jumpSound.Play();
+        if (isGrounded)
+        {
+            rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+            jumpSound.Play();
+        }
 
 
     }
 
-    private void Attack()
+    public void Attack()
     {
         attackSound.Play();
         if (isGrounded && isRecharged)
